@@ -1,0 +1,13 @@
+# never commit keys
+*.env
+.env*
+*.key
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# build outputs and local logs
+*.wasm
+*.jsonl
