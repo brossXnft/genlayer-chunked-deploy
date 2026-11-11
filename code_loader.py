@@ -84,5 +84,7 @@ class CodeLoader(gl.contract.Contract):
 		else:
 			raise gl.vm.UserError('mode must be slot or inplace')
 		if lock:
+			if mode == 'slot':
+				root.locked_slots.get().append(s.as_int())  # a normal deploy locks its code slot too
 			root.upgraders.get().truncate()  # immutable afterwards, like a normal deploy
 		return mode

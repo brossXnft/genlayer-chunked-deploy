@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self' https://rpc-bradbury.genlayer.com; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+  <title>Chunked Deploy</title>
+  <meta name="description" content="Deploy GenLayer contracts larger than one transaction, and verify what a chunk-deployed contract really runs.">
+  <link rel="stylesheet" href="web/style.css">
+</head>
+<body>
+  <main>
+    <header class="intro">
+      <p class="eyebrow">GenLayer Bradbury testnet</p>
+      <h1>See the code a GenLayer contract really runs</h1>
+      <p class="lede">Rust contracts are too large for one Bradbury transaction, so they go on chain in pieces through a small loader. Explorers then show the loader, not the contract. This page deploys those contracts from your wallet and lets anyone prove which code is running.</p>
+    </header>
+
+    <div class="tabs" role="tablist" aria-label="Mode">
+      <button class="tab" role="tab" id="tab-verify" aria-controls="panel-verify" aria-selected="true">Verify a contract</button>
+      <button class="tab" role="tab" id="tab-deploy" aria-controls="panel-deploy" aria-selected="false">Deploy a contract</button>
+    </div>
+
+    <section id="panel-verify" role="tabpanel" aria-labelledby="tab-verify">
+      <form id="verify-form" class="card" novalidate>
+        <label for="verify-address">Contract address</label>
+        <input id="verify-address" class="mono" autocomplete="off" spellcheck="false" placeholder="0x…">
+
+        <label for="verify-hash">Expected SHA-256 <span class="hint">optional</span></label>
+        <input id="verify-hash" class="mono" autocomplete="off" spellcheck="false" placeholder="Paste a hash, or choose the .wasm file below">
+        <input id="verify-file" type="file" accept=".wasm,application/wasm" aria-label="Choose the expected .wasm file">
+
+        <div class="actions">
+          <button type="submit" id="verify-go" class="primary">Check contract</button>
+          <button type="button" id="verify-example" class="quiet">Use an example</button>
+        </div>
+        <p id="verify-status" class="status" role="status"></p>
+      </form>
+      <div id="verify-report"></div>
+    </section>
+
+    <section id="panel-deploy" role="tabpanel" aria-labelledby="tab-deploy" hidden>
+      <div class="card">
+        <h2>1. Connect a wallet</h2>
+        <p class="muted">Every transaction is signed in your wallet. This page never sees your key.</p>
+        <select id="wallet-pick" aria-label="Wallet" hidden></select>
+        <div class="actions">
+          <button id="wallet-connect" class="primary">Connect wallet</button>
+        </div>
+        <p id="wallet-status" class="status" role="status"></p>
+      </div>
+
+      <div class="card">
+        <h2>2. Choose the contract</h2>
+        <label for="deploy-file">Compiled WebAssembly file</label>
+        <input id="deploy-file" type="file" accept=".wasm,application/wasm">
+        <dl id="deploy-plan" class="facts" hidden></dl>
+        <p id="deploy-file-status" class="status" role="status"></p>
+      </div>
+
+      <div class="card">
+        <h2>3. Upload and lock</h2>
+        <p class="muted">You confirm one transaction per piece. The contract is locked only after the uploaded bytes are read back and match your file.</p>
+        <ol id="deploy-steps" class="steps"></ol>
+        <div class="actions">
+          <button id="deploy-go" class="primary" disabled>Start deployment</button>
+          <button id="deploy-reset" class="quiet" hidden>Start over</button>
+        </div>
+        <p id="deploy-status" class="status" role="status"></p>
+      </div>
+      <div id="deploy-report"></div>
+    </section>
+
+    <footer>
+      <p>Chain data comes from the public RPC at rpc-bradbury.genlayer.com, so these results are only as honest as that node. Testnet only.</p>
+      <p><a href="https://github.com/brossXnft/genlayer-chunked-deploy">Source code and command-line tool</a></p>
+    </footer>
+  </main>
+  <script type="module" src="web/app.js"></script>
+</body>
+</html>
